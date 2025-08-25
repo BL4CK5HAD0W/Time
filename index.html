@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Árbol de Tres Corazones Llenos</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #fff0f5;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Segoe Script", cursive;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin: 20px;
+    color: #d63384;
+  }
+
+  #tree {
+    width: 400px;
+    height: 400px;
+  }
+
+  .falling-heart {
+    position: absolute;
+    top: -20px;
+    font-size: 18px;
+    opacity: 0.8;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+
+  #counter {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .leaf-heart path {
+    transform-origin: center;
+    animation: beat 2s infinite, float 4s ease-in-out infinite;
+    cursor: pointer; /* Indica que se puede tocar */
+  }
+
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  .te-amo {
+    position: absolute;
+    font-size: 20px;
+    color: #ff69b4;
+    font-weight: bold;
+    pointer-events: none;
+    animation: rise 1.5s ease-out forwards;
+  }
+
+  @keyframes rise {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-50px); }
+  }
+</style>
+</head>
+<body>
+  <h1>Para la persona que amo:<br>
+  Si pudiera elegir un lugar seguro, sería a tu lado.<br>
+  Cuánto más tiempo estoy contigo, más te amo 💖</h1>
+
+  <svg id="tree" viewBox="0 0 400 400">
+    <!-- Tronco y ramas principales -->
+    <path d="M200 400 C190 280, 210 200, 200 180" stroke="#5c2c06" stroke-width="20" fill="none"/>
+    <path d="M200 250 C140 200, 80 150, 120 140" stroke="#5c2c06" stroke-width="10" fill="none"/>
+    <path d="M200 250 C260 200, 320 150, 280 140" stroke="#5c2c06" stroke-width="10" fill="none"/>
+    <path d="M200 180 C190 160, 210 140, 200 120" stroke="#5c2c06" stroke-width="10" fill="none"/>
+    <g id="leaves"></g>
+  </svg>
+
+  <div id="counter"></div>
+
+<script>
+/* ===========================
+   Contador de tiempo
+=========================== */
+function updateCounter() {
+  const startDate = new Date("2024-11-17T11:12:00");
+  const now = new Date();
+  const diff = now - startDate;
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById("counter").textContent =
+    `Han pasado ${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos desde el 17 de noviembre de 2024💖
+    momento exacto dónde mi mundo tuvo sentido al fin, TE AMO💕, gracias por quedarte todo este tiempo`;
+}
+updateCounter();
+setInterval(updateCounter, 1000);
+
+/* ===========================
+   Corazones cayendo
+=========================== */
+function createFallingHeart() {
+  const heart = document.createElement("div");
+  heart.className = "falling-heart";
+  heart.textContent = "💖";
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.animationDuration = (3 + Math.random() * 5) + "s";
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 8000);
+}
+setInterval(createFallingHeart, 500);
+
+/* ===========================
+   Hojas en 3 corazones grandes llenos
+=========================== */
+const colors = ["#ffb3ba","#bae1ff","#baffc9","#ffffba","#ffdfba"];
+const leavesGroup = document.getElementById("leaves");
+
+// Función paramétrica de corazón
+function heartShape(t, scale=1) {
+  const x = scale * 16 * Math.pow(Math.sin(t), 3);
+  const y = -scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+  return {x, y};
+}
+
+// Definir los tres centros de los corazones
+const heartCenters = [
+  {cx: 120, cy: 140}, // izquierdo
+  {cx: 280, cy: 140}, // derecho
+  {cx: 200, cy: 100}  // central superior
+];
+
+const totalLeaves = 300; // más hojas para rellenar los corazones
+const leavesPerHeart = Math.floor(totalLeaves / 3);
+
+heartCenters.forEach(center => {
+  for (let i = 0; i < leavesPerHeart; i++) {
+    const t = Math.random() * 2 * Math.PI;
+    const {x, y} = heartShape(t, 3.5); 
+    const jitterX = (Math.random() - 0.5) * 20;
+    const jitterY = (Math.random() - 0.5) * 20;
+
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    const leaf = document.createElementNS("http://www.w3.org/2000/svg","g");
+    leaf.setAttribute("class","leaf-heart");
+    leaf.setAttribute("fill",color);
+    leaf.setAttribute("transform",`translate(${center.cx + x + jitterX},${center.cy + y + jitterY}) scale(0.7)`);
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("d","M0 -5 C-5 -15, -15 -15, -15 -5 A10 10 0 0 1 0 5 A10 10 0 0 1 15 -5 C15 -15, 5 -15, 0 -5 Z");
+
+    leaf.appendChild(path);
+    leavesGroup.appendChild(leaf);
+
+    // Evento click para mostrar "TE AMO 💝"
+    leaf.addEventListener("click", (e) => {
+      const rect = leaf.getBoundingClientRect();
+      const text = document.createElement("div");
+      text.className = "te-amo";
+      text.textContent = "TE AMO 💝";
+      text.style.left = (rect.left + rect.width / 2) + "px";
+      text.style.top = (rect.top - 20) + "px";
+      document.body.appendChild(text);
+
+      setTimeout(() => text.remove(), 1500);
+    });
+  }
+});
+</script>
+</body>
+</html>
