@@ -101,7 +101,7 @@
    Contador de tiempo
 =========================== */
 function updateCounter() {
-  const startDate = new Date("2023-11-17T11:12:00");
+  const startDate = new Date("2024-11-17T11:12:00");
   const now = new Date();
   const diff = now - startDate;
 
@@ -111,7 +111,8 @@ function updateCounter() {
   const seconds = Math.floor((diff / 1000) % 60);
 
   document.getElementById("counter").textContent =
-    `Han pasado ${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos desde el 17 de noviembre de 2023 💖`;
+    `Han pasado ${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos desde el 17 de noviembre de 2024💖
+    momento exacto dónde mi mundo tuvo sentido al fin, TE AMO💕, gracias por quedarte todo este tiempo`;
 }
 updateCounter();
 setInterval(updateCounter, 1000);
